@@ -1,0 +1,156 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: java-services-template
+message: |-
+  The following configmap(s) / secret(s) have been created in your project: ${PROJECT_NAME}.
+
+                   ConfigMap: ${SERVICE_NAME}-config
+                     Secrets: ${SERVICE_NAME}-secrets
+       Operator / Admin user: ${OPERATOR_USER}
+   Operator / Admin password: ${OPERATOR_PASSWORD}
+         
+  For more information about using this template, including OpenShift considerations, see SOME_LINK_TO_IGTB_PUBLIC_DOCS.
+metadata:
+  name: digital-gatekeeper-configuration-template
+  annotations:
+    description: |-
+      Config maps and secrets for Digital-Gatekeeper. For more information about using this template, including OpenShift considerations, see SOME_LINK_TO_IGTB_PUBLIC_DOCS.
+      
+      NOTE: Some limitations.
+
+objects:
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: ${SERVICE_NAME}-config
+    labels:
+      project: ${PROJECT_NAME}
+  data:
+    jvm-options: ${JAVA_OPTS}
+    logging-level: ${LOG_LEVEL}
+    
+    spring-application-name: ${SERVICE_NAME}
+    security-basic-enabled: ${SECURITY_ENABLED}
+    
+    spring-cloud-services-registrationMethod: ${CLOUD_SERVICES_REGISTRATIONMETHOD}
+
+    spring-cloud-config-discovery-enabled: ${CLOUD_CONFIG_DISCOVERY_ENABLED}
+    spring-cloud-config-fail-fast: ${CLOUD_CONFIG_FAIL_FAST}
+    spring-cloud-config-discovery-serviceId: ${CLOUD_CONFIG_DISCOVERY_SERVICEID}
+    spring-cloud-config-name: ${SPRING_CLOUD_CONFIG_NAME}
+    spring-cloud-config-profile: ${CLOUD_CONFIG_PROFILE}
+    spring-cloud-config-label: ${CLOUD_CONFIG_LABEL}
+
+    eureka-client-enabled: ${EUREKA_CLIENT_ENABLED}
+    eureka-client-registerWithEureka: ${EUREKA_CLIENT_REGISTERWITHEUREKA}
+    eureka-instance-preferIpAddress: ${EUREKA_INSTANCE_PREFERIPADDRESS}
+
+
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: ${SERVICE_NAME}-secrets
+    labels:
+      project: ${PROJECT_NAME}
+  stringData:
+    operator-user: ${OPERATOR_USER}
+    operator-password: ${OPERATOR_PASSWORD}
+
+parameters:
+#
+# OpenShift and JVM
+- description: Openshift project to be used.
+  displayName: openshift project
+  name: PROJECT_NAME
+  required: true
+  value: "cbx"
+- description: Name of the service 
+  displayName: Name of the service
+  name: SERVICE_NAME
+  required: true
+  
+- description: Java Virtual Machine tuning options 
+  displayName: JVM Options
+  name: JAVA_OPTS
+  required: true
+  value: "-Xmx1024m -Xms512m"
+
+# Spring Boot
+- description: Authentication details (for securing admin interface use).
+  displayName: security.basic.enabled
+  name: SECURITY_ENABLED
+  required: true
+  value: "false"
+- description: Username for Spring Boot actuator API.
+  displayName: Config / Actuator API Username
+  name: OPERATOR_USER
+  required: true
+  value: operator
+- description: Password for Spring Boot actuator API.
+  displayName: Config / Actuator API Password
+  from: '[a-zA-Z0-9]{16}'
+  generate: expression
+  name: OPERATOR_PASSWORD
+  required: true
+- description: Setting Log Levels of all Classes (hence the dot at the end).
+  displayName: Log Level
+  name: LOG_LEVEL
+  required: true
+  value: "INFO"
+
+#
+# Config repository
+- description: Enabling the DiscoveryClient to locate the Config Server.
+  displayName: Enable Config Discovery
+  name: CLOUD_CONFIG_DISCOVERY_ENABLED
+  required: true
+  value: "true"
+- description: Fail startup of the service if it cannot connect to the Config Server.
+  displayName: Fail on Error Downloading Configuration
+  name: CLOUD_CONFIG_FAIL_FAST
+  required: true
+  value: "true"
+- description: Configuration server ID used during discovery.
+  displayName: Configuration Server ID
+  name: CLOUD_CONFIG_DISCOVERY_SERVICEID
+  required: true
+  value: "digital-config"
+- description: Spring CLoud Profile to load.
+  displayName: Spring Profile to load
+  name: CLOUD_CONFIG_PROFILE
+  required: true
+  value: "cloud"
+- description: Branch name of the properties file to load.
+  displayName: Property file branch name
+  name: CLOUD_CONFIG_LABEL
+  required: true
+  value: "master"
+- description: Config Property Name.
+  displayName: Config Name 
+  name: SPRING_CLOUD_CONFIG_NAME
+  required: true
+    
+
+#
+# Service Registry
+- description: Use direct container networking registration method.
+  displayName: Registry registry method
+  name: CLOUD_SERVICES_REGISTRATIONMETHOD
+  required: true
+  value: "direct"
+- description: Enabling the Eureka client allows for direct container communication (recommended).
+  displayName: Enable Eureka Client
+  name: EUREKA_CLIENT_ENABLED
+  required: true
+  value: "true"
+- description: Enabling service registration with Eureka allows this service to be found by others.
+  displayName: Enable Service Registration
+  name: EUREKA_CLIENT_REGISTERWITHEUREKA
+  required: true
+  
+- description: Register container IP in service registration allows for direct container comunication (recommended).
+  displayName: Register Container IP 
+  name: EUREKA_INSTANCE_PREFERIPADDRESS
+  required: true
+  value: "true"

@@ -1,0 +1,249 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: java-services-template
+message: |-
+  The following service(s) have been created in your project: ${PROJECT_NAME}.
+
+      Service: ${SERVICE_NAME} version ${SERVICE_VERSION}
+
+  For more information about using this template, including OpenShift considerations, see SOME_LINK_TO_IGTB_PUBLIC_DOCS.
+metadata:
+  name: digital-gatekeeper-deployment-template
+  annotations:
+    description: |-
+      Deployment descriptors for external Digital-Gatekeeper, no persistent storage. For more information about using this template, including OpenShift considerations, see SOME_LINK_TO_IGTB_PUBLIC_DOCS.
+
+      NOTE: Some limitations.
+
+objects:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      project: ${PROJECT_NAME}
+    name: ${SERVICE_NAME}-service
+  spec:
+    ports:
+    - name: ${PORTOCOL}
+      port: 80
+      protocol: TCP
+      targetPort: 8090
+    selector:
+      name: ${SERVICE_NAME}-deployment
+    type: ${SERVICE_TYPE}
+
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      project: ${PROJECT_NAME}
+    name: ${SERVICE_NAME}
+  spec:
+    replicas: 1
+    template:
+      metadata:
+        labels:
+          name: ${SERVICE_NAME}-deployment
+      spec:
+        containers:
+        - env:
+          - name: JAVA_OPTS
+            valueFrom:
+              configMapKeyRef:
+                key: jvm-options
+                name: ${SERVICE_NAME}-config
+          - name: logging.level.
+            valueFrom:
+              configMapKeyRef:
+                key: logging-level
+                name: ${SERVICE_NAME}-config
+
+          - name: security.basic.enabled
+            valueFrom:
+              configMapKeyRef:
+                key: security-basic-enabled
+                name: ${SERVICE_NAME}-config        
+          - name: security.user.name
+            valueFrom:
+              secretKeyRef:
+                key: operator-user
+                name: ${SERVICE_NAME}-secrets
+          - name: security.user.password
+            valueFrom:
+              secretKeyRef:
+                key: operator-password
+                name: ${SERVICE_NAME}-secrets
+          - name: spring.application.name
+            valueFrom:
+              configMapKeyRef:
+                key: spring-application-name
+                name: ${SERVICE_NAME}-config
+          - name: spring.cloud.services.registrationMethod
+            valueFrom:
+              configMapKeyRef:
+                key: spring-cloud-services-registrationMethod
+                name: ${SERVICE_NAME}-config                
+
+          # Config repository
+          - name: spring.cloud.config.name
+            valueFrom:
+              configMapKeyRef:
+                key: spring-cloud-config-name
+                name: ${SERVICE_NAME}-config
+          - name: spring.cloud.config.discovery.enabled
+            valueFrom:
+              configMapKeyRef:
+                key: spring-cloud-config-discovery-enabled
+                name: ${SERVICE_NAME}-config 
+          - name: spring.cloud.config.fail-fast
+            valueFrom:
+              configMapKeyRef:
+                key: spring-cloud-config-fail-fast
+                name: ${SERVICE_NAME}-config
+          - name: spring.cloud.config.discovery.serviceId
+            valueFrom:
+              configMapKeyRef:
+                key: spring-cloud-config-discovery-serviceId
+                name: ${SERVICE_NAME}-config
+          - name: spring.cloud.config.profile
+            valueFrom:
+              configMapKeyRef:
+                key: spring-cloud-config-profile
+                name: ${SERVICE_NAME}-config 
+          - name: spring.cloud.config.label
+            valueFrom:
+              configMapKeyRef:
+                key: spring-cloud-config-label
+                name: ${SERVICE_NAME}-config 
+
+          # Registry settings
+          - name: eureka.client.enabled
+            valueFrom:
+              configMapKeyRef:
+                key: eureka-client-enabled
+                name: ${SERVICE_NAME}-config
+          - name: eureka.instance.preferIpAddress
+            valueFrom:
+              configMapKeyRef:
+                key: eureka-instance-preferIpAddress
+                name: ${SERVICE_NAME}-config
+          - name: eureka.client.registerWithEureka
+            valueFrom:
+              configMapKeyRef:
+                key: eureka-client-registerWithEureka
+                name: ${SERVICE_NAME}-config
+
+          # Registry Service Bindings
+          - name: REGISTRY_HOSTNAME
+            valueFrom:
+              configMapKeyRef:
+                key: hostname
+                name: registry-service-bindings-config
+          - name: REGISTRY_PORT
+            valueFrom:
+              configMapKeyRef:
+                key: port
+                name: registry-service-bindings-config
+          - name: REGISTRY_PROTOCOL
+            valueFrom:
+              configMapKeyRef:
+                key: protocol
+                name: registry-service-bindings-config
+          - name: REGISTRY_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: registry-service-bindings-secrets
+          - name: REGISTRY_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: registry-service-bindings-secrets
+
+          image: "${DOCKER_REGISTRY}/${IMAGE_NAME}:${SERVICE_VERSION}"
+          name: ${SERVICE_NAME}-java-service
+          ports:
+            - containerPort: 8090
+          imagePullPolicy: Always           
+          # resources:
+          #   requests:
+          #     cpu: '400m'
+          #     memory: '400Mi'
+          #   limits:
+          #     cpu: '600m'
+          #     memory: '800Mi'
+          readinessProbe:
+            initialDelaySeconds: 30
+            tcpSocket:
+              port: 8090
+            initialDelaySeconds: 120
+            timeoutSeconds: 5
+          livenessProbe:
+            initialDelaySeconds: 30
+            tcpSocket:
+              port: 8090
+            initialDelaySeconds: 120
+            timeoutSeconds: 5
+            failureThreshold: 10
+
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    labels:
+      project: ${PROJECT_NAME}
+    name: ${SERVICE_ROUTE_NAME}
+  spec:
+    port:
+      targetPort: ${PORTOCOL}
+    to:
+      kind: Service
+      name: ${SERVICE_NAME}-service
+    tls:
+      termination: ${TLS_TERMINATION_TYPE}  
+
+parameters:
+- description: Openshift project to be used.
+  displayName: openshift project
+  name: PROJECT_NAME
+  required: true
+  value: "cbx"
+- description: Docker registry URI.
+  displayName: Docker Registry URI
+  name: DOCKER_REGISTRY
+  required: true
+  #value: "igtb"
+- description: Docker Image Name to be used.
+  displayName: Docker Image Name
+  name: IMAGE_NAME
+  required: false
+  value: "digital-gatekeeper" 
+- description: Name of service name to be used.
+  displayName: Name of service Name
+  name: SERVICE_NAME
+  required: false
+- description: Version of ${SERVICE_NAME} image to be used.
+  displayName: Version of ${SERVICE_NAME} Image
+  name: SERVICE_VERSION
+  required: false
+  #value: "latest"
+- description: Name of the route to publish this service publicly
+  displayName: Content service route name
+  name: SERVICE_ROUTE_NAME
+  required: false
+  value: "digital-gatekeeper"
+- description: Openshift Service Type (clusterIP , NodePortor).
+  displayName: Openshift Service Type
+  name: SERVICE_TYPE
+  required: true
+  value: "NodePort"
+- description: Service and Route Protocol.
+  displayName: Service and Route Protocol
+  name: PORTOCOL
+  required: true
+  value: "http"
+- description: Route TLS Termination type.
+  displayName: Route TLS Termination type
+  name: TLS_TERMINATION_TYPE
+  required: false
+  value: "edge"  
