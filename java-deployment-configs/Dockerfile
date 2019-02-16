@@ -5,9 +5,9 @@ FROM docker-registry-default.apps.180.222.156.219.xip.io/openshift/java:8
 
 # You should specify the full path to the JAR using:
 #   $ docker build . --build-arg SERVICE_JAR=/path/to/service.jar
-ARG SERVICE_JAR=./digital-gatekeeper-0.0.7.jar
+#ARG SERVICE_JAR=./digital-gatekeeper-0.0.7.jar
 
-ARG S3_BUCKET_URI=https://s3.ap-south-1.amazonaws.com/cbx-openshift-artefacts
+#ARG S3_BUCKET_URI=https://s3.ap-south-1.amazonaws.com/cbx-openshift-artefacts
 
 ENV JAVA_OPTS=""
 ENV APP_OPTS=""
@@ -15,12 +15,12 @@ ENV APP_OPTS=""
 WORKDIR /cbx-java-service
 RUN chmod g+rwx /cbx-java-service
 
-ADD  ./digital-gatekeeper-0.0.7.jar /cbx-java-service/cbx-service.jar
+ADD  digital-gatekeeper-0.0.7.jar /cbx-java-service/cbx-service.jar
 RUN sh -c 'touch /cbx-java-service/cbx-service.jar'
 RUN chmod a+rx /cbx-java-service/cbx-service.jar
 
 # Add startup script
-ADD ./start-service.sh /cbx-java-service/start-service.sh
+ADD start-service.sh /cbx-java-service/start-service.sh
 RUN chmod a+rx /cbx-java-service/start-service.sh
 
 # Start Java Service
