@@ -1,7 +1,7 @@
 # You can specify a different base image containing Java8, for example:
 #   $ docker build . --build-arg BASE_JAVA_IMAGE=frolvlad/alpine-oraclejdk8:slim
-#ARG BASE_IMAGE=store/oracle/serverjre:8
-FROM store/oracle/serverjre:8
+ARG BASE_IMAGE=openshift/java:latest
+FROM ${BASE_IMAGE}
 
 # You should specify the full path to the JAR using:
 #   $ docker build . --build-arg SERVICE_JAR=/path/to/service.jar
