@@ -15,12 +15,12 @@ ENV APP_OPTS=""
 WORKDIR /cbx-java-service
 RUN chmod g+rwx /cbx-java-service
 
-ADD  ${SERVICE_JAR} /cbx-java-service/cbx-service.jar
+ADD  ./digital-gatekeeper-0.0.7.jar /cbx-java-service/cbx-service.jar
 RUN sh -c 'touch /cbx-java-service/cbx-service.jar'
 RUN chmod a+rx /cbx-java-service/cbx-service.jar
 
 # Add startup script
-ADD $S3_BUCKET_URI/java-services/start-service.sh /cbx-java-service/start-service.sh
+ADD ./start-service.sh /cbx-java-service/start-service.sh
 RUN chmod a+rx /cbx-java-service/start-service.sh
 
 # Start Java Service
