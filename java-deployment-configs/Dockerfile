@@ -2,7 +2,7 @@
 #   $ docker build . --build-arg BASE_JAVA_IMAGE=frolvlad/alpine-oraclejdk8:slim
 #ARG BASE_IMAGE=openshift/java:latest
 #FROM docker-registry-default.apps.180.222.156.219.xip.io/openshift/java:8
-FROM frolvlad/alpine-oraclejdk8:slim
+FROM openjdk:8
 
 # You should specify the full path to the JAR using:
 #   $ docker build . --build-arg SERVICE_JAR=/path/to/service.jar
