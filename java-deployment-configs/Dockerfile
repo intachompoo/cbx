@@ -5,7 +5,7 @@ FROM docker-registry-default.apps.180.222.156.219.xip.io/openshift/java:8
 
 # You should specify the full path to the JAR using:
 #   $ docker build . --build-arg SERVICE_JAR=/path/to/service.jar
-ARG SERVICE_JAR=./my-spring-boot.jar
+ARG SERVICE_JAR=./digital-gatekeeper-0.0.7.jar
 
 ARG S3_BUCKET_URI=https://s3.ap-south-1.amazonaws.com/cbx-openshift-artefacts
 
