@@ -30,6 +30,7 @@ RUN whoami
 RUN ls -la /home/jboss
 RUN ls -la /home/jboss/cbx-java-service
 
+USER root
 
 RUN sh -c 'touch /home/jboss/cbx-java-service/cbx-service.jar'
 RUN chmod a+rx /home/jboss/cbx-java-service/cbx-service.jar
