@@ -31,6 +31,7 @@ RUN chmod a+rx ~/cbx-java-service/cbx-service.jar
 
 # Add startup script
 ADD start-service.sh ~/cbx-java-service/start-service.sh
+RUN ls -la
 RUN chmod a+rx ~/cbx-java-service/start-service.sh
 
 # Start Java Service
