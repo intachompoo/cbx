@@ -14,20 +14,22 @@ ENV JAVA_OPTS=""
 ENV APP_OPTS=""
 
 
-WORKDIR /apps/cbx-java-service
-# RUN chmod g+rwx /home/cbx-java-service
-RUN chgrp -R 0 /apps/cbx-java-service && \
-    chmod -R g=u /apps/cbx-java-service
+#WORKDIR /apps/cbx-java-service
+WORKDIR ~
+RUN chmod g+rwx ~/cbx-java-service
+
+#RUN chgrp -R 0 /apps/cbx-java-service && \
+#    chmod -R g=u /apps/cbx-java-service
 
 #ADD $SERVICE_JAR /apps/cbx-java-service/cbx-service.jar
-ADD digital-gatekeeper-0.0.7.jar /apps/cbx-java-service/cbx-service.jar
+ADD digital-gatekeeper-0.0.7.jar ~/cbx-java-service/cbx-service.jar
 
-RUN sh -c 'touch /apps/cbx-java-service/cbx-service.jar'
-RUN chmod a+rx /apps/cbx-java-service/cbx-service.jar
+RUN sh -c 'touch ~/cbx-java-service/cbx-service.jar'
+RUN chmod a+rx ~/cbx-java-service/cbx-service.jar
 
 # Add startup script
-ADD start-service.sh /apps/cbx-java-service/start-service.sh
-RUN chmod a+rx /apps/cbx-java-service/start-service.sh
+ADD start-service.sh ~/cbx-java-service/start-service.sh
+RUN chmod a+rx ~/cbx-java-service/start-service.sh
 
 # Start Java Service
-CMD ["/apps/cbx-java-service/start-service.sh"]
+CMD ["~/cbx-java-service/start-service.sh"]
