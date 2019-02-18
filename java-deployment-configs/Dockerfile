@@ -16,7 +16,9 @@ ENV APP_OPTS=""
 WORKDIR /home/cbx-java-service
 RUN chmod g+rwx /home/cbx-java-service
 
-ADD $SERVICE_JAR /home/cbx-java-service/cbx-service.jar
+#ADD $SERVICE_JAR /home/cbx-java-service/cbx-service.jar
+ADD digital-gatekeeper-0.0.7.jar /home/cbx-java-service/cbx-service.jar
+
 RUN sh -c 'touch /home/cbx-java-service/cbx-service.jar'
 RUN chmod a+rx /home/cbx-java-service/cbx-service.jar
 
