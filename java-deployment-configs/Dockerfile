@@ -41,4 +41,5 @@ RUN ls -la /home/jboss
 RUN chmod a+rx /home/jboss/cbx-java-service/start-service.sh
 
 # Start Java Service
+USER jboss
 CMD ["/home/jboss/cbx-java-service/start-service.sh"]
