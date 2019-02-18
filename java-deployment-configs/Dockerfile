@@ -26,6 +26,7 @@ RUN chmod g+rwx /home/jboss/cbx-java-service
 #ADD $SERVICE_JAR /apps/cbx-java-service/cbx-service.jar
 ADD digital-gatekeeper-0.0.7.jar /home/jboss/cbx-java-service/cbx-service.jar
 
+RUN chmod a+wx /home/jboss/cbx-java-service/cbx-service.jar
 RUN sh -c 'touch /home/jboss/cbx-java-service/cbx-service.jar'
 RUN chmod a+rx /home/jboss/cbx-java-service/cbx-service.jar
 
