@@ -23,21 +23,19 @@ RUN chgrp -R 0 /home/jboss/cbx-java-service && \
 
 RUN chmod g+rwx /home/jboss/cbx-java-service
 
-COPY $SERVICE_JAR /home/jboss/cbx-java-service/cbx-service.jar
+ADD $SERVICE_JAR /home/jboss/cbx-java-service/cbx-service.jar
 #ADD digital-gatekeeper-0.0.7.jar /home/jboss/cbx-java-service/cbx-service.jar
 
 RUN whoami
 RUN ls -la /home/jboss
 RUN ls -la /home/jboss/cbx-java-service
 
-RUN chgrp -R 0 /home/jboss/cbx-java-service && \
-    chmod -R g=u /home/jboss/cbx-java-service
 
 RUN sh -c 'touch /home/jboss/cbx-java-service/cbx-service.jar'
 RUN chmod a+rx /home/jboss/cbx-java-service/cbx-service.jar
 
 # Add startup script
-COPY start-service.sh /home/jboss/cbx-java-service/start-service.sh
+ADD start-service.sh /home/jboss/cbx-java-service/start-service.sh
 RUN ls -la /home/jboss
 RUN chmod a+rx /home/jboss/cbx-java-service/start-service.sh
 
