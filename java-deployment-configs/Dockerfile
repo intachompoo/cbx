@@ -16,10 +16,11 @@ ENV APP_OPTS=""
 
 #WORKDIR /apps/cbx-java-service
 WORKDIR ~
-RUN chmod g+rwx ~/cbx-java-service
 
-#RUN chgrp -R 0 /apps/cbx-java-service && \
-#    chmod -R g=u /apps/cbx-java-service
+RUN chgrp -R 0 ~/cbx-java-service && \
+    chmod -R g=u ~/cbx-java-service
+
+RUN chmod g+rwx ~/cbx-java-service
 
 #ADD $SERVICE_JAR /apps/cbx-java-service/cbx-service.jar
 ADD digital-gatekeeper-0.0.7.jar ~/cbx-java-service/cbx-service.jar
