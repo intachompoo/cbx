@@ -55,4 +55,4 @@ fi
 
 
 
-java $JAVA_OPTS $APP_OPTS -Djava.security.egd=file:/dev/./urandom -jar /cbx-java-service/cbx-service.jar
+java $JAVA_OPTS $APP_OPTS -Djava.security.egd=file:/dev/./urandom -jar /home/cbx-java-service/cbx-service.jar
