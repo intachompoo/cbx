@@ -13,8 +13,11 @@ ARG SERVICE_JAR
 ENV JAVA_OPTS=""
 ENV APP_OPTS=""
 
+
 WORKDIR /home/cbx-java-service
-RUN chmod g+rwx /home/cbx-java-service
+# RUN chmod g+rwx /home/cbx-java-service
+RUN chgrp -R 0 /home/cbx-java-service && \
+    chmod -R g=u /home/cbx-java-service
 
 #ADD $SERVICE_JAR /home/cbx-java-service/cbx-service.jar
 ADD digital-gatekeeper-0.0.7.jar /home/cbx-java-service/cbx-service.jar
