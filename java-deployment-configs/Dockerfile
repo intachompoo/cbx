@@ -17,6 +17,7 @@ ENV APP_OPTS=""
 #WORKDIR /apps/cbx-java-service
 WORKDIR ~
 
+RUN mkdir -p ~/cbx-java-service
 RUN chgrp -R 0 ~/cbx-java-service && \
     chmod -R g=u ~/cbx-java-service
 
