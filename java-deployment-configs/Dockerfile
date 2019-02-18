@@ -36,6 +36,6 @@ USER root
 RUN chmod a+rx /cbx-java-service/start-service.sh
 
 # Start Java Service
-
-CMD ["/cbx-java-service/start-service.sh"]
 USER jboss
+CMD ["/cbx-java-service/start-service.sh"]
+
