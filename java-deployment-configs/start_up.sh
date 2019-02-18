@@ -1,0 +1,1 @@
+java -jar /cbx-java-service/cbx-service.jar
