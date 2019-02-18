@@ -15,16 +15,24 @@ ENV JAVA_OPTS=""
 ENV APP_OPTS=""
 
 WORKDIR /cbx-java-service
+
+USER root
 RUN chmod g+rwx /cbx-java-service
 
+USER jboss
 ADD  ${SERVICE_JAR} /cbx-java-service/cbx-service.jar
+
+USER root
 RUN sh -c 'touch /cbx-java-service/cbx-service.jar'
 RUN chmod a+rx /cbx-java-service/cbx-service.jar
 
 # Add startup script
 #ADD $S3_BUCKET_URI/java-services/start-service.sh /cbx-java-service/start-service.sh
+USER jboss
 ADD start-service.sh /cbx-java-service/start-service.sh
+USER root
 RUN chmod a+rx /cbx-java-service/start-service.sh
 
 # Start Java Service
+USER jboss
 CMD ["/cbx-java-service/start-service.sh"]
