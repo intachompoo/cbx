@@ -26,7 +26,9 @@ RUN chmod g+rwx /home/jboss/cbx-java-service
 ADD $SERVICE_JAR /home/jboss/cbx-java-service/cbx-service.jar
 #ADD digital-gatekeeper-0.0.7.jar /home/jboss/cbx-java-service/cbx-service.jar
 
-RUN ls -la /home/jboss 
+RUN whoami
+RUN ls -la /home/jboss
+RUN ls -la /home/jboss/cbx-java-service
 
 RUN chgrp -R 0 /home/jboss/cbx-java-service && \
     chmod -R g=u /home/jboss/cbx-java-service
