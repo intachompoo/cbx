@@ -26,6 +26,8 @@ USER root
 RUN sh -c 'touch /cbx-java-service/cbx-service.jar'
 RUN chmod a+rx /cbx-java-service/cbx-service.jar
 
+RUN ls -la /cbx-java-service/
+
 # Add startup script
 #ADD $S3_BUCKET_URI/java-services/start-service.sh /cbx-java-service/start-service.sh
 USER jboss
