@@ -3,8 +3,8 @@
 #ARG BASE_IMAGE=openshift/java:latest
 #ARG BASE_IMAGE=docker-registry-default.apps.180.222.156.219.xip.io/openshift/java:8
 #FROM ${BASE_IMAGE}
-FROM docker-registry-default.apps.180.222.156.219.xip.io/openshift/java:8
-#FROM oracle/openjdk:8
+#FROM docker-registry-default.apps.180.222.156.219.xip.io/openshift/java:8
+FROM oracle/openjdk:8
 
 # You should specify the full path to the JAR using:
 #   $ docker build . --build-arg SERVICE_JAR=/path/to/service.jar
